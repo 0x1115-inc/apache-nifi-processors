@@ -1,0 +1,29 @@
+# Reference: https://github.com/CribberSix/docker-compose/blob/main/nifi/docker-compose.yml
+services:
+  nifi:
+      hostname: nifi
+      container_name: nifi_container_persistent
+      image: 'apache/nifi:latest'
+      restart: on-failure
+      user: root
+      environment:
+          - SINGLE_USER_CREDENTIALS_USERNAME=thanhdancer
+          - SINGLE_USER_CREDENTIALS_PASSWORD=R6AvgFPBfZ81APJC%
+          - NIFI_WEB_PROXY_HOST=localhost
+      volumes:
+          - ./data/database_repository:/opt/nifi/nifi-current/database_repository
+          - ./data/database_repository/flowfile_repository:/opt/nifi/nifi-current/flowfile_repository
+          - ./data/database_repository/content_repository:/opt/nifi/nifi-current/content_repository
+          - ./data/database_repository/provenance_repository:/opt/nifi/nifi-current/provenance_repository
+          - ./data/database_repository/state:/opt/nifi/nifi-current/state
+          - ./data/database_repository/logs:/opt/nifi/nifi-current/logs
+          # uncomment the next line after copying the /conf directory from the container to your local directory to persist NiFi flows
+          - ./data/database_repository/conf:/opt/nifi/nifi-current/conf
+      networks:
+          - service-network              
+
+
+networks:
+  # In this server, `service-network` is the network of all services including `nginx` which expose as a gateway.
+  service-network:
+      name: service-network
